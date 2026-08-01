@@ -206,7 +206,8 @@ Este proyecto **no está afiliado** a la Administración General del Estado. Los
 ## Tests
 
 ```bash
-npm test
+npm test        # unit tests (mocked HTTP)
+npm run test:live  # live tests hitting the real API (network required)
 ```
 
 ---
