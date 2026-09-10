@@ -87,10 +87,21 @@ test('throws on unexpected payload', async () => {
   );
 });
 
-test('throws when station coordinates are missing', async () => {
-  const payload = { ListaEESSPrecio: [{ IDEESS: '1', Rótulo: 'X' }] };
-  await assert.rejects(
-    () => fetchStations({ httpClient: createFakeClient(payload) }),
-    /Missing coordinate value/,
-  );
+test('skips stations with missing coordinates instead of failing the batch', async () => {
+  const payload = {
+    ListaEESSPrecio: [
+      { IDEESS: '1', Rótulo: 'X' },
+      {
+        IDEESS: '2',
+        Rótulo: 'Repsol',
+        Latitud: '40,416775',
+        'Longitud (WGS84)': '-3,703790',
+        'Precio Gasolina 95': '1,559',
+      },
+    ],
+  };
+  const stations = await fetchStations({ httpClient: createFakeClient(payload) });
+
+  assert.equal(stations.length, 1);
+  assert.equal(stations[0].sourceStationId, '2');
 });
