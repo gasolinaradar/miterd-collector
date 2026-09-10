@@ -57,7 +57,20 @@ async function fetchStations(options = {}, hooks = {}) {
 
   reportProgress(60, { stage: 'normalizing_dataset', stationCount: rawStations.length });
   logger.info(`Fetched ${rawStations.length} stations from MITERD`);
-  const normalized = rawStations.map(normalizeRawStation);
+  const normalized = [];
+  const skipped = [];
+  for (const raw of rawStations) {
+    try {
+      normalized.push(normalizeRawStation(raw));
+    } catch (err) {
+      skipped.push({ id: raw.IDEESS, error: err.message });
+    }
+  }
+  if (skipped.length > 0) {
+    logger.warn(`Skipped ${skipped.length} MITERD stations with invalid data`, {
+      skipped: skipped.slice(0, 5),
+    });
+  }
   reportProgress(100, { stage: 'completed', stationCount: normalized.length });
   return normalized;
 }
