@@ -217,3 +217,4 @@ npm run test:live  # live tests hitting the real API (network required)
 **EN:** MIT. See [LICENSE](./LICENSE). The MITERD data is **not** covered by this license; it is public information of the Spanish Administration.
 
 **ES:** MIT. Consulta [LICENSE](./LICENSE). Los datos del MITERD **no** están cubiertos por esta licencia; son información pública de la Administración General del Estado.
+MITERD API Health Check: Validated 2026-09-12
