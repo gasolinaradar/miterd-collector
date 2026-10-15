@@ -1,12 +1,25 @@
+<div align="center">
+
 # @gasolinaradar/miterd-collector
+
+**A Node.js collector for the official MITERD fuel-price dataset (Spain).**
+**Collector de Node.js para el dataset oficial de precios de carburantes del MITERD (España).**
+
+[![npm version](https://img.shields.io/npm/v/%40gasolinaradar%2Fmiterd-collector.svg)](https://www.npmjs.com/package/@gasolinaradar/miterd-collector)
+[![license MIT](https://img.shields.io/npm/l/%40gasolinaradar%2Fmiterd-collector.svg)](./LICENSE)
+[![node 18+](https://img.shields.io/node/v/%40gasolinaradar%2Fmiterd-collector.svg)](https://nodejs.org)
+[![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/gasolinaradar/miterd-collector/issues)
+![ESP - Spain](https://img.shields.io/badge/ESP-Spain-red?style=flat&labelColor=darkred)
+
+</div>
 
 <!-- EN -->
 
-A Node.js collector for the **official MITERD fuel-price dataset** (Spain). It downloads all fuel stations from the public REST API of the Spanish Ministry for Ecological Transition (MITERD) and returns a **normalized, ready-to-use** array of stations.
+It downloads all fuel stations from the public REST API of the Spanish Ministry for Ecological Transition (MITERD) and returns a **normalized, ready-to-use** array of stations.
 
 <!-- ES -->
 
-Collector de Node.js para el **dataset oficial de precios de carburantes del MITERD** (España). Descarga todas las estaciones de servicio desde el API REST público del Ministerio para la Transición Ecológica (MITERD) y devuelve un array de estaciones **normalizado y listo para usar**.
+Descarga todas las estaciones de servicio desde el API REST público del Ministerio para la Transición Ecológica (MITERD) y devuelve un array de estaciones **normalizado y listo para usar**.
 
 ---
 
@@ -39,6 +52,8 @@ Collector de Node.js para el **dataset oficial de precios de carburantes del MIT
 ```bash
 npm install @gasolinaradar/miterd-collector
 ```
+
+Requires Node.js 18+ / Requiere Node.js 18+.
 
 ---
 
@@ -90,17 +105,15 @@ const miterdCollector = createMiterdCollector({
   url: () => getSourceMetadata('miterd').url, // string or () => string
   logger,
 });
-
-const stations = await miterdCollector.fetch({
-  reportProgress(percent, metadata = {}) {
-    console.log(`${percent}%`, metadata);
-  },
-});
 ```
+
+See [Station contract / Contrato de estación](#station-contract--contrato-de-estación) for the full contract and output shape.
 
 ---
 
-## Options / Opciones
+## Configuration / Configuración
+
+**EN:**
 
 | Option       | Type                     | Default    | Description                                                                             |
 | ------------ | ------------------------ | ---------- | --------------------------------------------------------------------------------------- |
@@ -109,6 +122,8 @@ const stations = await miterdCollector.fetch({
 | `retries`    | `number`                 | `3`        | Retry attempts before failing.                                                          |
 | `logger`     | `{ info, warn, debug }`  | `console`  | Injectable logger.                                                                      |
 | `httpClient` | `{ get(url, opts) }`     | `axios`    | Injectable HTTP client (useful for tests).                                              |
+
+**ES:**
 
 | Opción       | Tipo                     | Por defecto | Descripción                                                                                |
 | ------------ | ------------------------ | ----------- | ------------------------------------------------------------------------------------------ |
@@ -120,7 +135,19 @@ const stations = await miterdCollector.fetch({
 
 ---
 
-## Output schema / Esquema de salida
+## Station contract / Contrato de estación
+
+Every collector returned by `createMiterdCollector` follows the same contract / Todo collector devuelto por `createMiterdCollector` sigue el mismo contrato:
+
+```js
+{
+  name: 'miterd',
+  country: 'ES',
+  async fetch(context) { /* → Station[] */ },
+}
+```
+
+`context` may include a `reportProgress(percent, metadata)` callback (see [Progress reporting / Reporte de progreso](#progress-reporting--reporte-de-progreso)) / `context` puede incluir un callback `reportProgress(percent, metadata)`.
 
 Each normalized station looks like this / Cada estación normalizada tiene esta forma:
 
@@ -173,6 +200,15 @@ const stations = await miterdCollector.fetch({
 
 ---
 
+## Testing
+
+```bash
+npm test         # unit tests against test/collector.test.js (mocked HTTP)
+npm run test:live  # live tests hitting the real API (network required)
+```
+
+---
+
 ## Data source / Fuente de datos
 
 **EN:** The data is the public fuel-price dataset of the Spanish Ministry for Ecological Transition (MITERD), published at:
@@ -187,34 +223,30 @@ Este proyecto **no está afiliado** a la Administración General del Estado. Los
 
 ---
 
-## Legal / Legal
+## Ecosystem / Ecosistema
 
 **EN:**
 
-- [LEGAL.md](./LEGAL.md) — Legal notice and disclaimer (bilingual).
-- [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md) — Data attribution and third-party licenses.
-- [LICENSE](./LICENSE) — MIT License (applies to this software, **not** to the underlying MITERD data).
+- [Repository](https://github.com/gasolinaradar/miterd-collector) — source code on GitHub.
+- [Issues](https://github.com/gasolinaradar/miterd-collector/issues) — bug reports and feature requests.
+- [npm package](https://www.npmjs.com/package/@gasolinaradar/miterd-collector) — published releases.
+- [LEGAL.md](./LEGAL.md) — legal notice and disclaimer.
+- [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md) — data attribution and third-party licenses.
 
 **ES:**
 
-- [LEGAL.md](./LEGAL.md) — Aviso legal y descargo de responsabilidad (bilingüe).
-- [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md) — Atribución de datos y licencias de terceros.
-- [LICENSE](./LICENSE) — Licencia MIT (aplica a este software, **no** a los datos subyacentes del MITERD).
-
----
-
-## Tests
-
-```bash
-npm test        # unit tests (mocked HTTP)
-npm run test:live  # live tests hitting the real API (network required)
-```
+- [Repositorio](https://github.com/gasolinaradar/miterd-collector) — código fuente en GitHub.
+- [Issues](https://github.com/gasolinaradar/miterd-collector/issues) — incidencias y peticiones de funcionalidad.
+- [Paquete npm](https://www.npmjs.com/package/@gasolinaradar/miterd-collector) — versiones publicadas.
+- [LEGAL.md](./LEGAL.md) — aviso legal y descargo de responsabilidad.
+- [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md) — atribución de datos y licencias de terceros.
 
 ---
 
 ## License / Licencia
 
-**EN:** MIT. See [LICENSE](./LICENSE). The MITERD data is **not** covered by this license; it is public information of the Spanish Administration.
+**EN:** MIT. See [LICENSE](./LICENSE) and the legal notice in [LEGAL.md](./LEGAL.md). The MITERD data is **not** covered by this license; it is public information of the Spanish Administration. Third-party notices in [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md).
 
-**ES:** MIT. Consulta [LICENSE](./LICENSE). Los datos del MITERD **no** están cubiertos por esta licencia; son información pública de la Administración General del Estado.
+**ES:** MIT. Consulta [LICENSE](./LICENSE) y el aviso legal en [LEGAL.md](./LEGAL.md). Los datos del MITERD **no** están cubiertos por esta licencia; son información pública de la Administración General del Estado. Avisos de terceros en [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md).
+
 MITERD API Health Check: Validated 2026-09-12
